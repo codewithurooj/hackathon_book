@@ -1,0 +1,21 @@
+/* website/src/components/Chatbot/ErrorToast.module.css */
+.errorToast {
+  background-color: var(--ifm-color-danger-lightest); /* Red background for error */
+  color: var(--ifm-color-danger-dark);
+  border: 1px solid var(--ifm-color-danger);
+  border-radius: var(--ifm-border-radius);
+}
+
+.infoToast {
+  background-color: var(--ifm-color-info-lightest); /* Blue background for info */
+  color: var(--ifm-color-info-dark);
+  border: 1px solid var(--ifm-color-info);
+  border-radius: var(--ifm-border-radius);
+}
+
+.toastContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+}

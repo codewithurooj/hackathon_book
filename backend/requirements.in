@@ -1,0 +1,9 @@
+fastapi
+openai
+qdrant-client
+psycopg2-binary # psycopg2 requires build tools, psycopg2-binary is easier for development
+uvicorn # for running fastapi app
+pip-tools
+sqlalchemy
+httpx
+pytest

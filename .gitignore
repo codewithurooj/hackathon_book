@@ -1,0 +1,79 @@
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+.virtualenv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+.cache/
+
+# Node modules (if any JavaScript tooling)
+node_modules/
+
+# ROS 2 specific
+install/
+log/
+build/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Documentation builds
+docs/_build/
+site/
+.docusaurus/
+
+# AI/ML
+*.h5
+*.pkl
+*.pth
+*.onnx
+*.pb
+models/
+checkpoints/
+
+# Audio files (for VLA testing)
+*.wav
+*.mp3
+!examples/**/test_audio/*.wav
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# OS specific
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+NUL
+

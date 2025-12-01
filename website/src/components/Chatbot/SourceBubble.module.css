@@ -1,0 +1,19 @@
+/* website/src/components/Chatbot/SourceBubble.module.css */
+.sourceBubble {
+  display: inline-block;
+  background-color: var(--docusaurus-secondary-background-color); /* Light grey */
+  color: var(--docusaurus-text-color);
+  border: 1px solid var(--docusaurus-border-color);
+  border-radius: 10px;
+  padding: 3px 8px;
+  margin: 5px 5px 0 0;
+  font-size: 0.75em;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.sourceBubble:hover {
+  background-color: var(--docusaurus-primary-color);
+  color: white;
+}
