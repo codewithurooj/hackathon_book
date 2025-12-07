@@ -18,13 +18,13 @@ const config: Config = {
   url: 'https://codewithurooj.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/my_book/',
+  baseUrl: '/hackathon_book/',
   trailingSlash: false,
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'codewithurooj', // Usually your GitHub org/user name.
-  projectName: 'my_book', // Usually your repo name.
+  projectName: 'hackathon_book', // Usually your repo name.
 
   onBrokenLinks: 'warn', // Changed from 'throw' to allow build with missing pages
 
