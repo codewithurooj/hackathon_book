@@ -24,3 +24,6 @@ structlog
 
 # For handling markdown frontmatter
 python-frontmatter
+
+# PostgreSQL async driver (for translations feature)
+asyncpg>=0.29.0
