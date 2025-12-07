@@ -1,10 +1,10 @@
-# Web Dev Book - Backend API
+# Physical AI & Humanoid Robotics - Backend API
 
-FastAPI backend with RAG (Retrieval Augmented Generation) for the Web Development Book chatbot.
+FastAPI backend with RAG (Retrieval Augmented Generation) for the Physical AI and Humanoid Robotics textbook chatbot.
 
 ## Features
 
-- **General Q&A**: Ask questions about any web development topic covered in the book
+- **General Q&A**: Ask questions about any Physical AI and Humanoid Robotics topic covered in the book
 - **Context-Based Q&A**: Select text and ask questions about it specifically
 - **RAG Pipeline**: Uses OpenAI embeddings, Qdrant vector search, and GPT-4 for accurate answers
 - **Source Citations**: Every answer includes relevant sources from the book
@@ -44,11 +44,12 @@ OPENAI_API_KEY=sk-your-actual-api-key
 # Qdrant Configuration (free tier at https://cloud.qdrant.io)
 QDRANT_URL=https://your-cluster.qdrant.io
 QDRANT_API_KEY=your-qdrant-api-key
-QDRANT_COLLECTION_NAME=web_dev_book
+QDRANT_COLLECTION_NAME=physical-ai-book
 
 # API Configuration
 API_BASE_URL=http://localhost:8000
 CORS_ORIGINS=["http://localhost:3000"]
+BACKEND_API_KEY=your-secure-api-key-here
 ```
 
 ### 3. Ingest Book Content
@@ -61,7 +62,7 @@ python scripts/ingest_book.py
 
 This will:
 - Create the Qdrant collection
-- Generate embeddings for all 7 chapters
+- Generate embeddings for all book chapters
 - Upload vectors and metadata to Qdrant
 
 ### 4. Start the Server
@@ -96,7 +97,7 @@ POST /api/chat/general
 Content-Type: application/json
 
 {
-  "question": "What is HTML?",
+  "question": "What is embodied AI?",
   "conversation_id": "optional-uuid"
 }
 ```
@@ -104,13 +105,13 @@ Content-Type: application/json
 Response:
 ```json
 {
-  "answer": "HTML (HyperText Markup Language) is...",
+  "answer": "Embodied AI refers to artificial intelligence systems that interact with the physical world through sensors and actuators...",
   "sources": [
     {
-      "title": "Chapter 1: HTML Basics",
-      "url": "/docs/chapter-01-html",
+      "title": "Chapter 1: Foundations of Physical AI",
+      "url": "/docs/chapter-01-physical-ai",
       "relevance_score": 0.95,
-      "snippet": "HTML is the foundation..."
+      "snippet": "Physical AI systems must integrate perception, reasoning, and action..."
     }
   ],
   "confidence": 0.92,
@@ -125,10 +126,35 @@ POST /api/chat/context
 Content-Type: application/json
 
 {
-  "question": "What are the main properties?",
-  "context": "CSS Flexbox is a layout system...",
+  "question": "What are the main components?",
+  "context": "Humanoid robots are complex systems that integrate multiple technologies...",
   "conversation_id": "optional-uuid"
 }
+```
+
+### ChatKit Streaming Endpoint (Used by Frontend)
+
+```bash
+POST /api/v1/chatkit/chat
+Content-Type: application/json
+X-API-Key: your-backend-api-key
+
+{
+  "messages": [
+    {"role": "user", "content": "What is deep reinforcement learning?"}
+  ],
+  "selected_text": "Optional selected text from book for context",
+  "stream": true,
+  "session_id": "session-123"
+}
+```
+
+Response (Server-Sent Events):
+```
+data: {"id": "chatcmpl-xxx", "choices": [{"delta": {"content": "Deep..."}}]}
+data: {"id": "chatcmpl-xxx", "choices": [{"delta": {"metadata": {"sources": [...]}}}]}
+data: {"id": "chatcmpl-xxx", "choices": [{"delta": {}, "finish_reason": "stop"}]}
+data: [DONE]
 ```
 
 ## Project Structure

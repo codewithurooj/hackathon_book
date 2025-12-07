@@ -10,14 +10,27 @@ function Chatbot() {
   const [input, setInput] = useState('');
   const [selectedTextContext, setSelectedTextContext] = useState(''); // State to hold selected text
   const [sessionId, setSessionId] = useState(() => {
-    // Initialize session ID from localStorage or generate a new one
-    const savedSessionId = localStorage.getItem('chatbotSessionId');
-    return savedSessionId || `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    // Initialize session ID - will be loaded from localStorage in useEffect
+    return `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   });
 
   useEffect(() => {
-    // Save session ID to localStorage whenever it changes
-    localStorage.setItem('chatbotSessionId', sessionId);
+    // Only access localStorage on client side
+    if (typeof window !== 'undefined') {
+      const savedSessionId = localStorage.getItem('chatbotSessionId');
+      if (savedSessionId) {
+        setSessionId(savedSessionId);
+      } else {
+        localStorage.setItem('chatbotSessionId', sessionId);
+      }
+    }
+  }, []); // Run once on mount
+
+  useEffect(() => {
+    // Save session ID to localStorage whenever it changes (client-side only)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('chatbotSessionId', sessionId);
+    }
   }, [sessionId]);
 
 
@@ -25,24 +38,27 @@ function Chatbot() {
     setIsOpen(!isOpen);
   };
 
-  const sendMessageToBackend = async (message, textContext = null) => {
+  const sendMessageToBackend = async (message, textContext = null, botMessageId) => {
     try {
       // Determine the backend URL based on environment
       const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000/api/v1';
 
-      // Prepare the request body
+      // Prepare the request body in ChatKit format
       const requestBody = {
-        question: message,
+        messages: [
+          { role: 'user', content: message }
+        ],
         session_id: sessionId,
-        selected_text: textContext || null
+        selected_text: textContext || null,
+        stream: true
       };
 
-      // Make the API call to the backend
-      const response = await fetch(`${backendUrl}/chat`, {
+      // Make the API call to the backend - using ChatKit-compatible endpoint
+      const response = await fetch(`${backendUrl}/chatkit/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-API-Key': process.env.REACT_APP_CHATBOT_API_KEY || process.env.BACKEND_API_KEY || 'your-backend-api-key', // You'll need to set this
+          'X-API-Key': process.env.REACT_APP_CHATBOT_API_KEY || process.env.BACKEND_API_KEY || 'temp-key-placeholder',
         },
         body: JSON.stringify(requestBody),
       });
@@ -52,14 +68,15 @@ function Chatbot() {
         throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
       }
 
-      // Handle the streaming response
+      // Handle the streaming response from ChatKit endpoint
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
       let answer = '';
       let sources = [];
+      let finishReceived = false;
 
-      while (true) {
+      while (!finishReceived) {
         const { done, value } = await reader.read();
         if (done) break;
 
@@ -70,15 +87,33 @@ function Chatbot() {
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             try {
-              const data = JSON.parse(line.slice(6)); // Remove 'data: ' prefix
-              if (data.answer_chunk) {
-                answer += data.answer_chunk;
+              const data = line.slice(6); // Remove 'data: ' prefix
+              if (data === '[DONE]') {
+                finishReceived = true;
+                break;
               }
-              if (data.sources) {
-                sources = data.sources;
-              }
-              if (data.session_id) {
-                setSessionId(data.session_id); // Update session ID if changed by backend
+
+              const parsedData = JSON.parse(data);
+              if (parsedData.choices && parsedData.choices[0]) {
+                const choice = parsedData.choices[0];
+                if (choice.delta && choice.delta.content) {
+                  answer += choice.delta.content;
+
+                  // Update the bot message in real-time as chunks arrive
+                  setMessages((prevMessages) =>
+                    prevMessages.map((msg) =>
+                      msg.id === botMessageId
+                        ? { ...msg, text: answer }
+                        : msg
+                    )
+                  );
+                }
+                // Check for metadata in the response
+                if (choice.delta && choice.delta.metadata) {
+                  if (choice.delta.metadata.sources) {
+                    sources = choice.delta.metadata.sources;
+                  }
+                }
               }
             } catch (e) {
               console.warn("Could not parse SSE data:", line);
@@ -87,7 +122,7 @@ function Chatbot() {
         }
       }
 
-      // Return the collected response
+      // Return the final collected response with sources
       return {
         answer_chunk: answer,
         sources: sources,
@@ -104,9 +139,9 @@ function Chatbot() {
   const handleSendMessage = async (textContext = null) => {
     const messageToSend = textContext || input;
 
-    if (messageToSend.trim() === '') return;
+    if (!messageToSend || String(messageToSend).trim() === '') return;
 
-    const userMessage = { id: messages.length + 1, text: messageToSend, sender: 'user' };
+    const userMessage = { id: Date.now(), text: messageToSend, sender: 'user' };
     setMessages((prevMessages) => [...prevMessages, userMessage]);
 
     if (!textContext) { // Clear input only if it's not from selected text
@@ -115,28 +150,107 @@ function Chatbot() {
       setSelectedTextContext(''); // Clear selected text context
     }
 
+    // Create an empty bot message that will be updated with streaming content
+    const botMessageId = Date.now() + 1;
+    const botMessage = {
+      id: botMessageId,
+      text: '',
+      sender: 'bot',
+      sources: [],
+    };
+    setMessages((prevMessages) => [...prevMessages, botMessage]);
+
     try {
-        const backendResponse = await sendMessageToBackend(messageToSend, textContext);
+        const backendResponse = await sendMessageToBackend(messageToSend, textContext, botMessageId);
 
-        const botMessage = {
-          id: messages.length + 2,
-          text: backendResponse.answer_chunk,
-          sender: 'bot',
-          sources: backendResponse.sources,
-        };
-        setMessages((prevMessages) => [...prevMessages, botMessage]);
-
-        // TODO: Integrate with actual backend API (T016, T019)
+        // Update the bot message with final sources
+        setMessages((prevMessages) =>
+          prevMessages.map((msg) =>
+            msg.id === botMessageId
+              ? { ...msg, sources: backendResponse.sources || [] }
+              : msg
+          )
+        );
     } catch (error) {
         // Error already displayed by customToast in sendMessageToBackend
-        // We might want to add a 'failed' message to history here if needed
+        // Update the bot message to show error
+        setMessages((prevMessages) =>
+          prevMessages.map((msg) =>
+            msg.id === botMessageId
+              ? { ...msg, text: 'Sorry, I encountered an error while processing your request.' }
+              : msg
+          )
+        );
     }
-  };
+  }  // Closing brace for handleSendMessage function
 
   const handleAskAboutThis = (text) => {
-    setSelectedTextContext(text); // Store selected text for sending
+    // Ensure we're working with a proper string and not an event object
+    let selectedText = text;
+
+    // If text is an event object or has event properties, extract the actual text
+    if (text && typeof text === 'object' && text.text) {
+      selectedText = text.text; // If it's already an object with text property
+    } else if (text && typeof text === 'object' && text.detail) {
+      selectedText = text.detail.text; // If it's a custom event
+    } else if (text && typeof text === 'object') {
+      // If it's a general object, try to get text from selection
+      selectedText = window.getSelection ? window.getSelection().toString().trim() : '';
+    }
+
+    if (!selectedText || typeof selectedText !== 'string' || selectedText.trim() === '') {
+      return;
+    }
+
+    setSelectedTextContext(selectedText); // Store selected text for sending
     setIsOpen(true); // Open chat window if not already open
-    handleSendMessage(text); // Immediately send the selected text as a question
+
+    // Create user message with the question
+    const userMessage = {
+      id: Date.now(),
+      text: `Explain this text: "${selectedText}"`,
+      sender: 'user'
+    };
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
+
+    // Send the message with selected text as context
+    sendMessageWithContext(selectedText);
+  };
+
+  const sendMessageWithContext = async (selectedText) => {
+    // Create an empty bot message that will be updated with streaming content
+    const botMessageId = Date.now() + 1;
+    const botMessage = {
+      id: botMessageId,
+      text: '',
+      sender: 'bot',
+      sources: [],
+    };
+    setMessages((prevMessages) => [...prevMessages, botMessage]);
+
+    try {
+      const questionText = `Explain this text: "${selectedText}"`;
+      const backendResponse = await sendMessageToBackend(questionText, selectedText, botMessageId);
+
+      // Update the bot message with final sources
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          msg.id === botMessageId
+            ? { ...msg, sources: backendResponse.sources || [] }
+            : msg
+        )
+      );
+    } catch (error) {
+      console.error('Error sending message with context:', error);
+      // Update the bot message to show error
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          msg.id === botMessageId
+            ? { ...msg, text: 'Sorry, I encountered an error while processing your request.' }
+            : msg
+        )
+      );
+    }
   };
 
 
@@ -157,7 +271,7 @@ function Chatbot() {
           <div className={styles.chatBody}>
             {messages.map((msg) => (
               <div key={msg.id} className={`${styles.message} ${styles[msg.sender]}`}>
-                {msg.text}
+                {typeof msg.text === 'string' && msg.text ? msg.text : (msg.sender === 'bot' && !msg.text ? '...' : String(msg.text || ''))}
                 {msg.sources && msg.sources.length > 0 && (
                   <div className={styles.sourcesContainer}>
                     {msg.sources.map((source, idx) => (

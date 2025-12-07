@@ -1,61 +1,214 @@
 /**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
+ * Modern Homepage Styles for Physical AI Book
  */
 
+/* Hero Banner */
 .heroBanner {
-  padding: 6rem 1rem;
-  text-align: center;
+  padding: 8rem 2rem 6rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  color: #111827;
-  margin-bottom: 3rem;
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 3rem 1rem;
-  }
+.heroBanner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.1), transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.08), transparent 50%);
+  pointer-events: none;
+}
+
+.heroContent {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 4rem;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.heroText {
+  color: white;
+  text-align: left;
+}
+
+.badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 0.5rem 1.25rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.heroTitle {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin: 1rem 0;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.heroSubtitle {
+  font-size: 1.4rem;
+  margin: 1rem 0;
+  opacity: 0.95;
+  font-weight: 500;
+}
+
+.heroDescription {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  opacity: 0.9;
+  margin: 1.5rem 0 2rem;
+  max-width: 600px;
 }
 
 .buttons {
   display: flex;
   gap: 1rem;
-  align-items: center;
-  justify-content: center;
+  margin-bottom: 3rem;
   flex-wrap: wrap;
 }
 
-.featuredBook {
-  margin: 4rem 0;
-  padding: 0 1rem;
+.primaryButton {
+  background: white;
+  color: #667eea;
+  border: none;
+  font-weight: 600;
+  transition: all 0.3s;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
-.featuredBook h2 {
+.primaryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  color: #764ba2;
+  background: white;
+  text-decoration: none;
+}
+
+.secondaryButton {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.secondaryButton:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  text-decoration: none;
+  color: white;
+}
+
+.stats {
+  display: flex;
+  gap: 3rem;
+  margin-top: 2rem;
+}
+
+.stat {
   text-align: center;
-  margin-bottom: 3rem;
-  color: #111827;
-  font-size: 2rem;
-  font-weight: 700;
+}
+
+.statNumber {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin-top: 0.5rem;
+}
+
+.heroImage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
 }
 
-.featuredBook h2:after {
-  content: '';
+.imageGlow {
   position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 3px;
-  background: var(--ifm-color-primary);
-  border-radius: 2px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent 70%);
+  border-radius: 50%;
+  animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+.robotIcon {
+  font-size: 12rem;
+  animation: float 3s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* Section Header */
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.sectionHeader h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+}
+
+.sectionHeader p {
+  font-size: 1.2rem;
+  color: #64748b;
+}
+
+/* Featured Book Section */
+.featuredBook {
+  padding: 6rem 2rem;
+  background: white;
 }
 
 .bookGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
@@ -63,75 +216,301 @@
 
 .bookCard {
   background: white;
-  border-radius: 16px;
-  padding: 2rem;
-  transition: all 0.3s ease;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
-  text-align: center;
+  border: 2px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 2.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.bookCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+
+.bookCard:hover::before {
+  transform: scaleX(1);
 }
 
 .bookCard:hover {
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-  border-color: var(--ifm-color-primary-lighter);
-  transform: translateY(-5px);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
+  border-color: #c7d2fe;
 }
 
-.bookCard h3 {
-  color: #111827;
-  margin-top: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
+.cardIcon {
+  font-size: 3rem;
   margin-bottom: 1rem;
 }
 
+.bookCard h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0.5rem 0 1rem;
+}
+
 .bookCard p {
-  color: #4b5563;
+  color: #64748b;
   line-height: 1.7;
   margin-bottom: 1.5rem;
 }
 
-@media screen and (max-width: 768px) {
-  .bookGrid {
+.cardLink {
+  color: #667eea;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.cardLink:hover {
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+/* Tech Stack Section */
+.techStack {
+  padding: 6rem 2rem;
+  background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
+}
+
+.techGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.techCard {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.techCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: #c7d2fe;
+}
+
+.techIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.techCard h4 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0.5rem 0;
+}
+
+.techCard p {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+/* AI Assistant Section */
+.aiSection {
+  padding: 6rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.aiContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.aiText h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: white;
+  margin: 1rem 0;
+}
+
+.aiBadge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 0.5rem 1.25rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.aiText p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  opacity: 0.95;
+  margin: 1.5rem 0;
+}
+
+.aiFeatures {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
+}
+
+.aiFeatures li {
+  padding: 0.75rem 0;
+  font-size: 1.05rem;
+  opacity: 0.95;
+}
+
+.aiCta {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.aiCta span {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.chatPreview {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.chatHeader {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 1rem 1.5rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.chatDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.chatBody {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.userMessage {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 18px;
+  border-bottom-right-radius: 4px;
+  align-self: flex-end;
+  max-width: 80%;
+  font-size: 0.95rem;
+}
+
+.botMessage {
+  background: #f1f5f9;
+  color: #334155;
+  padding: 0.75rem 1.25rem;
+  border-radius: 18px;
+  border-bottom-left-radius: 4px;
+  max-width: 85%;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* Responsive Design */
+@media (max-width: 996px) {
+  .heroBanner {
+    padding: 4rem 1.5rem 3rem;
+  }
+
+  .heroContent {
     grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .heroText {
+    text-align: center;
+  }
+
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+
+  .heroDescription {
+    max-width: 100%;
+  }
+
+  .buttons {
+    justify-content: center;
+  }
+
+  .stats {
+    justify-content: center;
+  }
+
+  .robotIcon {
+    font-size: 8rem;
+  }
+
+  .aiContent {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .aiText {
+    text-align: center;
+  }
+
+  .sectionHeader h2 {
+    font-size: 2rem;
   }
 }
 
-.chatbotSection {
-  background: #f9fafb;
-  padding: 4rem 1rem;
-  color: #111827;
-  text-align: center;
-  margin-top: 2rem;
-}
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: 2rem;
+  }
 
-.chatbotSection h2 {
-  margin-bottom: 1.5rem;
-  color: #111827;
-  font-size: 1.8rem;
-  font-weight: 700;
-  position: relative;
-}
+  .heroSubtitle {
+    font-size: 1.1rem;
+  }
 
-.chatbotSection h2:after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 3px;
-  background: var(--ifm-color-primary);
-  border-radius: 2px;
-}
+  .stats {
+    gap: 2rem;
+  }
 
-.chatContainer {
-  max-width: 800px;
-  margin: 2rem auto 0;
-  padding: 0 1rem;
-}
+  .statNumber {
+    font-size: 2rem;
+  }
 
-.featuredBook .container {
-  max-width: 1200px;
-  margin: 0 auto;
+  .bookGrid,
+  .techGrid {
+    grid-template-columns: 1fr;
+  }
 }

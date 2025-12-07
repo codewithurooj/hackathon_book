@@ -3,7 +3,7 @@ FastAPI main application
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import health, chat
+from app.routers import health, chat, translation
 from app.utils.config import settings
 import structlog
 
@@ -37,6 +37,7 @@ app.add_middleware(
 # Include routers
 app.include_router(health.router, prefix="/api/v1")
 app.include_router(chat.router, prefix="/api/v1")
+app.include_router(translation.router, prefix="/api/v1")
 
 # Startup event
 @app.on_event("startup")

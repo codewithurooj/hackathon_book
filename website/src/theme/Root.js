@@ -1,12 +1,12 @@
 import React from 'react';
-import ChatbotChatKit from '@site/src/components/ChatbotChatKit'; // ChatKit component that connects to backend
+import Chatbot from '@site/src/components/Chatbot'; // Original Chatbot with text selection functionality that I updated to use RAG service
 
 // Default Docusaurus Root component (passed as children)
 function Root({ children }) {
   return (
     <>
       {children}
-      <ChatbotChatKit />  {/* Using the ChatKit component that connects to your backend */}
+      <Chatbot />  {/* Original Chatbot with proper text selection functionality */}
     </>
   );
 }

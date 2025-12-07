@@ -34,19 +34,29 @@ class AgentService:
             Generated answer
         """
         try:
-            # Build context from chunks
+            # Build context from chunks - don't include source titles to prevent AI from citing them
             context_text = "\n\n".join([
-                f"Source: {chunk['payload'].get('title', 'Unknown')}\n{chunk['payload'].get('content', '')}"
+                chunk['payload'].get('content', '')
                 for chunk in context_chunks
             ])
 
             # Create system prompt
             if mode == "context":
-                system_prompt = """You are a concise assistant. Answer in ONE SHORT sentence only (max 15 words).
-NO explanations. NO examples. Just the core definition."""
+                system_prompt = """You are an expert assistant for the Physical AI & Humanoid Robotics textbook.
+Based on the provided context, answer the user's question thoroughly but concisely.
+Explain concepts clearly using the information from the context.
+
+IMPORTANT: Do NOT include source citations or chapter references in your answer.
+Do NOT say things like "Source: Chapter X" or "According to the textbook...".
+The sources will be shown separately to the user. Just provide a clear, direct answer."""
             else:
-                system_prompt = """You are a concise assistant. Answer in ONE SHORT sentence only (max 15 words).
-NO explanations. NO examples. Just the core definition."""
+                system_prompt = """You are an expert assistant for the Physical AI & Humanoid Robotics textbook.
+Use the retrieved context to provide accurate and helpful answers to the user's question.
+Explain concepts clearly and thoroughly.
+
+IMPORTANT: Do NOT include source citations or chapter references in your answer.
+Do NOT say things like "Source: Chapter X" or "According to the textbook...".
+The sources will be shown separately to the user. Just provide a clear, direct answer."""
 
             # Create messages
             messages = [
@@ -59,7 +69,7 @@ NO explanations. NO examples. Just the core definition."""
                 model=self.model,
                 messages=messages,
                 temperature=0.7,
-                max_tokens=50  # Extreme brevity - max 15 words
+                max_tokens=500  # Allow for more comprehensive answers
             )
 
             answer = response.choices[0].message.content
@@ -89,19 +99,29 @@ NO explanations. NO examples. Just the core definition."""
             Answer chunks
         """
         try:
-            # Build context from chunks
+            # Build context from chunks - don't include source titles to prevent AI from citing them
             context_text = "\n\n".join([
-                f"Source: {chunk['payload'].get('title', 'Unknown')}\n{chunk['payload'].get('content', '')}"
+                chunk['payload'].get('content', '')
                 for chunk in context_chunks
             ])
 
             # Create system prompt
             if mode == "context":
-                system_prompt = """You are a concise assistant. Answer in ONE SHORT sentence only (max 15 words).
-NO explanations. NO examples. Just the core definition."""
+                system_prompt = """You are an expert assistant for the Physical AI & Humanoid Robotics textbook.
+Based on the provided context, answer the user's question thoroughly but concisely.
+Explain concepts clearly using the information from the context.
+
+IMPORTANT: Do NOT include source citations or chapter references in your answer.
+Do NOT say things like "Source: Chapter X" or "According to the textbook...".
+The sources will be shown separately to the user. Just provide a clear, direct answer."""
             else:
-                system_prompt = """You are a concise assistant. Answer in ONE SHORT sentence only (max 15 words).
-NO explanations. NO examples. Just the core definition."""
+                system_prompt = """You are an expert assistant for the Physical AI & Humanoid Robotics textbook.
+Use the retrieved context to provide accurate and helpful answers to the user's question.
+Explain concepts clearly and thoroughly.
+
+IMPORTANT: Do NOT include source citations or chapter references in your answer.
+Do NOT say things like "Source: Chapter X" or "According to the textbook...".
+The sources will be shown separately to the user. Just provide a clear, direct answer."""
 
             # Create messages
             messages = [
@@ -114,7 +134,7 @@ NO explanations. NO examples. Just the core definition."""
                 model=self.model,
                 messages=messages,
                 temperature=0.7,
-                max_tokens=150,  # Reduced from 500 to enforce brevity
+                max_tokens=500,  # Allow for comprehensive answers
                 stream=True
             )
 

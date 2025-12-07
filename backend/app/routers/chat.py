@@ -45,7 +45,6 @@ async def general_chat(request: GeneralChatRequest):
             question=request.question,
             top_k=5
         )
-        sources = [] # Remove sources as per user request
 
         processing_time = time.time() - start_time
 
@@ -90,7 +89,6 @@ async def context_chat(request: ContextChatRequest):
             context=request.context,
             top_k=3
         )
-        sources = [] # Remove sources as per user request
 
         processing_time = time.time() - start_time
 
@@ -123,6 +121,7 @@ class ChatKitRequest(BaseModel):
     messages: List[ChatKitMessage] = Field(..., description="List of conversation messages")
     stream: Optional[bool] = Field(default=True, description="Whether to stream the response")
     session_id: Optional[str] = Field(default=None, description="Session ID for chat history")
+    selected_text: Optional[str] = Field(None, description="Optional selected text from book for context")
 
 
 @router.post("/chatkit/chat")
@@ -153,12 +152,20 @@ async def chatkit_chat(
 
     try:
         # Use RAG service to answer the question
-        # For simplicity, using general question approach here
-        answer, sources, confidence = await rag_service.answer_general_question(
-            question=user_message,
-            top_k=5
-        )
-        sources = [] # Remove sources as per user request
+        # Check if selected text is provided to use as context
+        if request.selected_text:
+            # Use context-based question answering with the selected text
+            answer, sources, confidence = await rag_service.answer_context_question(
+                question=user_message,
+                context=request.selected_text,
+                top_k=3
+            )
+        else:
+            # Use general question answering
+            answer, sources, confidence = await rag_service.answer_general_question(
+                question=user_message,
+                top_k=5
+            )
 
         # Stream response in ChatKit/OpenAI format
         async def generate_stream():

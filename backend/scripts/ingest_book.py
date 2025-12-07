@@ -35,9 +35,24 @@ def extract_chapter_info(file_path):
         # Use filename as title if no heading found
         title = file_path.stem.replace('-', ' ').title()
     
-    # Convert file path to URL - assuming docs are served from /docs
+    # Convert file path to URL - using the actual Docusaurus baseUrl and structure
     relative_path = file_path.relative_to(Path(__file__).parent.parent.parent / 'docs')
-    url = f"/docs/{relative_path.with_suffix('').as_posix().replace(os.sep, '-')}"
+    # Remove .md extension and convert to URL path
+    url_path = relative_path.with_suffix('').as_posix()
+
+    # Docusaurus strips number prefixes (01-, 02-, etc.) from URLs
+    # Split path and remove number prefixes from each segment
+    path_parts = url_path.split('/')
+    cleaned_parts = []
+    for part in path_parts:
+        # Remove number prefix if it exists (e.g., "01-what-is-physical-ai" -> "what-is-physical-ai")
+        if re.match(r'^\d+-', part):
+            part = re.sub(r'^\d+-', '', part)
+        cleaned_parts.append(part)
+    url_path = '/'.join(cleaned_parts)
+
+    # Add baseUrl prefix for GitHub Pages deployment
+    url = f"/my_book/docs/{url_path}"
     
     return {
         "title": title,

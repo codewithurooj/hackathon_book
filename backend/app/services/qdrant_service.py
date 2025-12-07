@@ -94,7 +94,7 @@ class QdrantService:
         self,
         query_embedding: List[float],
         limit: int = 5,
-        score_threshold: float = 0.7
+        score_threshold: float = 0.3  # Lowered from 0.7 to make search less strict
     ) -> List[Dict[str, Any]]:
         """
         Search for similar vectors
@@ -102,7 +102,7 @@ class QdrantService:
         Args:
             query_embedding: Query vector
             limit: Maximum number of results
-            score_threshold: Minimum similarity score (not used in new API)
+            score_threshold: Minimum similarity score
 
         Returns:
             List of search results with payload and score
@@ -121,13 +121,15 @@ class QdrantService:
             ).points
 
             # Filter by score threshold manually
+            # Lower the default threshold to return more results
+            actual_threshold = score_threshold if score_threshold is not None else 0.0
             filtered_results = [
                 {
                     "payload": result.payload,
                     "score": result.score
                 }
                 for result in results
-                if result.score >= score_threshold
+                if result.score >= actual_threshold
             ]
 
             logger.info("search_completed", found=len(filtered_results), total=len(results))

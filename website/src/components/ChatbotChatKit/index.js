@@ -43,7 +43,7 @@ function ChatbotChatKit() {
           setInput(`Explain this text: "${text}"`);
           setIsOpen(true);
           button.remove();
-          
+
           // Focus the input area after a short delay
           setTimeout(() => {
             textareaRef.current?.focus();
@@ -130,12 +130,12 @@ function ChatbotChatKit() {
                   answer += content;
                 }
               }
-              
+
               // Check for sources in metadata
               if (data.choices && data.choices[0] && data.choices[0].delta && data.choices[0].delta.metadata) {
                 sources = data.choices[0].delta.metadata.sources || [];
               }
-              
+
               if (data.choices && data.choices[0] && data.choices[0].finish_reason === 'stop') {
                 break;
               }

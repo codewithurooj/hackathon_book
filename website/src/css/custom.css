@@ -122,14 +122,166 @@
   border: 1px solid #334155;
 }
 
-/* Doc content */
+/* Doc content - Enhanced reading experience */
+.markdown {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #1e293b;
+}
+
+[data-theme='dark'] .markdown {
+  color: #e2e8f0;
+}
+
 .markdown h1,
 .markdown h2,
 .markdown h3,
 .markdown h4,
 .markdown h5,
 .markdown h6 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.markdown h1 {
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.markdown h2 {
+  font-size: 2rem;
+  color: #334155;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+[data-theme='dark'] .markdown h2 {
+  color: #f1f5f9;
+  border-bottom-color: #334155;
+}
+
+.markdown h3 {
+  font-size: 1.5rem;
+  color: #475569;
+}
+
+[data-theme='dark'] .markdown h3 {
+  color: #cbd5e1;
+}
+
+.markdown p {
+  margin-bottom: 1.25rem;
+}
+
+.markdown a {
+  color: #667eea;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.markdown a:hover {
+  border-bottom-color: #667eea;
+}
+
+.markdown code {
+  background: linear-gradient(135deg, #f3e8ff 0%, #e0e7ff 100%);
+  color: #5b21b6;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+[data-theme='dark'] .markdown code {
+  background: linear-gradient(135deg, #2e1065 0%, #1e293b 100%);
+  color: #c4b5fd;
+}
+
+.markdown pre {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+}
+
+[data-theme='dark'] .markdown pre {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+.markdown blockquote {
+  border-left: 4px solid #667eea;
+  background: linear-gradient(to right, rgba(102, 126, 234, 0.05), transparent);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 4px;
+}
+
+[data-theme='dark'] .markdown blockquote {
+  background: linear-gradient(to right, rgba(102, 126, 234, 0.1), transparent);
+}
+
+.markdown ul,
+.markdown ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.markdown li {
+  margin-bottom: 0.5rem;
+}
+
+.markdown table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.markdown th {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
   font-weight: 600;
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.markdown td {
+  padding: 12px 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+[data-theme='dark'] .markdown td {
+  border-top-color: #334155;
+}
+
+.markdown tr:hover {
+  background: #f8fafc;
+}
+
+[data-theme='dark'] .markdown tr:hover {
+  background: #1e293b;
+}
+
+/* Selection highlight */
+::selection {
+  background: rgba(102, 126, 234, 0.2);
+  color: inherit;
+}
+
+[data-theme='dark'] ::selection {
+  background: rgba(102, 126, 234, 0.3);
 }
 
 /* Chatbot styles */
@@ -358,4 +510,79 @@
 
 .textSelectionButton:hover {
   background: var(--ifm-color-primary-darker);
+}
+/* ===================================
+   Urdu Translation Support
+   =================================== */
+
+/* Import Noto Nastaliq Urdu font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500;600;700&display=swap');
+
+/* Urdu text styling */
+.urdu-content,
+[lang="ur"],
+[dir="rtl"] {
+  font-family: 'Noto Nastaliq Urdu', 'Traditional Arabic', 'Arabic Typesetting', serif;
+  direction: rtl;
+  text-align: right;
+  line-height: 2;
+  font-size: 1.1em;
+}
+
+/* Article content when in Urdu mode */
+article.markdown[dir="rtl"] {
+  font-family: 'Noto Nastaliq Urdu', 'Traditional Arabic', 'Arabic Typesetting', serif;
+  direction: rtl;
+  text-align: right;
+}
+
+/* Urdu headings */
+article.markdown[dir="rtl"] h1,
+article.markdown[dir="rtl"] h2,
+article.markdown[dir="rtl"] h3,
+article.markdown[dir="rtl"] h4,
+article.markdown[dir="rtl"] h5,
+article.markdown[dir="rtl"] h6 {
+  font-family: 'Noto Nastaliq Urdu', 'Traditional Arabic', 'Arabic Typesetting', serif;
+  text-align: right;
+}
+
+/* Code blocks should remain LTR even in RTL mode */
+article.markdown[dir="rtl"] pre,
+article.markdown[dir="rtl"] code {
+  direction: ltr;
+  text-align: left;
+  font-family: var(--ifm-font-family-monospace);
+}
+
+/* Lists in RTL mode */
+article.markdown[dir="rtl"] ul,
+article.markdown[dir="rtl"] ol {
+  padding-right: 2rem;
+  padding-left: 0;
+}
+
+/* Blockquotes in RTL mode */
+article.markdown[dir="rtl"] blockquote {
+  border-right: 4px solid var(--ifm-color-primary);
+  border-left: none;
+  padding-right: 1rem;
+  padding-left: 0;
+}
+
+/* Tables should work in both directions */
+article.markdown[dir="rtl"] table {
+  direction: rtl;
+}
+
+/* Images and figures centered */
+article.markdown[dir="rtl"] img,
+article.markdown[dir="rtl"] figure {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Smooth transition when switching languages */
+article.markdown {
+  transition: direction 0.3s ease;
 }

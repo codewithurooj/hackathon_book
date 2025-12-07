@@ -1,29 +1,45 @@
-/* website/src/components/Chatbot/TextSelectionButton.module.css */
+/* Text Selection Button - Beautiful popup */
 .askButton {
   position: absolute;
-  background: linear-gradient(135deg, #1a2a6c, #2a4d69);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  border-radius: 4px;
-  padding: 8px 15px;
+  border-radius: 8px;
+  padding: 10px 16px;
   font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
   z-index: 10000;
+  transition: all 0.2s ease;
+  animation: popIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  font-weight: 500;
+}
+
+.askButton::before {
+  content: '💬';
+  font-size: 16px;
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .askButton:hover {
-  background: linear-gradient(135deg, #2a4d69, #4b86b4);
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
 }
 
 .askButton:active {
   transform: translateY(0);
+  box-shadow: 0 3px 12px rgba(102, 126, 234, 0.4);
 }

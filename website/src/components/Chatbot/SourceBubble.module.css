@@ -1,19 +1,32 @@
-/* website/src/components/Chatbot/SourceBubble.module.css */
+/* Source Bubble - Elegant citation badges */
 .sourceBubble {
-  display: inline-block;
-  background-color: var(--docusaurus-secondary-background-color); /* Light grey */
-  color: var(--docusaurus-text-color);
-  border: 1px solid var(--docusaurus-border-color);
-  border-radius: 10px;
-  padding: 3px 8px;
-  margin: 5px 5px 0 0;
-  font-size: 0.75em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%);
+  border: 1px solid #c7d2fe;
+  border-radius: 16px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  color: #4c1d95;
   text-decoration: none;
-  cursor: pointer;
-  white-space: nowrap;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.sourceBubble::before {
+  content: '📖';
+  font-size: 14px;
 }
 
 .sourceBubble:hover {
-  background-color: var(--docusaurus-primary-color);
-  color: white;
+  background: linear-gradient(135deg, #c7d2fe 0%, #ddd6fe 100%);
+  border-color: #a78bfa;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
+  text-decoration: none;
+}
+
+.sourceBubble:active {
+  transform: translateY(0);
 }

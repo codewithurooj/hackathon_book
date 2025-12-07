@@ -100,20 +100,8 @@ class RAGService:
             Tuple of (answer, sources, confidence)
         """
         try:
-            # 1. Generate embedding for context
-            logger.info("rag_context_embedding", context_length=len(context))
-            context_embedding = await self.embedding_service.generate_embedding(context)
-
-            # 2. Search for similar/related content
-            logger.info("rag_context_search", top_k=top_k)
-            search_results = await self.qdrant_service.search(
-                query_embedding=context_embedding,
-                limit=top_k,
-                score_threshold=0.3  # Lower threshold to find more results
-            )
-
-            # 3. Add selected context as primary source
-            context_chunk = {
+            # 1. Add selected context as primary source with maximum relevance
+            primary_context = {
                 "payload": {
                     "title": "Selected Context",
                     "content": context,
@@ -121,9 +109,29 @@ class RAGService:
                 },
                 "score": 1.0
             }
-            all_chunks = [context_chunk] + search_results
 
-            # 4. Generate answer using all context
+            all_chunks = [primary_context]
+
+            # 2. Optionally search for related content to add more context
+            if top_k > 0:
+                logger.info("rag_context_search", top_k=top_k)
+
+                # Search for related content that might complement the selected text
+                # Use a combination of the question and selected context to find related content
+                combined_query = f"{question} {context}"[:2000]  # Truncate to avoid token limits
+                query_embedding = await self.embedding_service.generate_embedding(combined_query)
+
+                search_results = await self.qdrant_service.search(
+                    query_embedding=query_embedding,
+                    limit=top_k,
+                    score_threshold=0.3  # Lower threshold to find more results
+                )
+
+                all_chunks = [primary_context] + search_results
+            else:
+                search_results = []
+
+            # 3. Generate answer using all context
             logger.info("rag_context_generate", total_chunks=len(all_chunks))
             answer = await self.agent_service.generate_answer(
                 question=question,
@@ -131,10 +139,10 @@ class RAGService:
                 mode="context"
             )
 
-            # 5. Format sources
+            # 4. Format sources
             sources = [
                 Source(
-                    title=result["payload"].get("title", "Unknown"),
+                    title=result["payload"].get("title", "Selected Context"),
                     url=result["payload"].get("url", "#"),
                     relevance_score=result["score"],
                     snippet=result["payload"].get("content", "")[:200] + "..."
@@ -142,8 +150,8 @@ class RAGService:
                 for result in all_chunks
             ]
 
-            # 6. Higher confidence for context-based (we have exact context)
-            confidence = 0.90
+            # 5. Higher confidence for context-based (we have exact context)
+            confidence = min(0.95, 0.70 + (0.25 * (len(search_results) / top_k)) if top_k > 0 else 0.95)
 
             logger.info(
                 "rag_context_completed",

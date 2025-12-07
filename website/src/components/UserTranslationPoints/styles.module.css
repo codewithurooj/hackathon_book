@@ -1,0 +1,182 @@
+/**
+ * UserTranslationPoints Styles
+ */
+
+.container {
+  margin: 1.5rem 0;
+}
+
+.card {
+  background-color: var(--ifm-card-background-color, white);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--ifm-color-primary);
+}
+
+.refreshButton {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
+
+.refreshButton:hover {
+  opacity: 1;
+  transform: rotate(90deg);
+}
+
+.pointsDisplay {
+  margin-bottom: 1.5rem;
+}
+
+.mainPoints {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.pointsNumber {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--ifm-color-primary);
+}
+
+.pointsLabel {
+  font-size: 1.1rem;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.progressBar {
+  height: 1rem;
+  background-color: var(--ifm-color-emphasis-200);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--ifm-color-primary-light),
+    var(--ifm-color-primary)
+  );
+  transition: width 0.3s ease;
+  border-radius: 0.5rem;
+}
+
+.breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.statLabel {
+  font-size: 0.95rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.statValue {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-900);
+}
+
+.maxPointsNotice {
+  padding: 0.75rem;
+  background-color: var(--ifm-color-success-lightest, #e8f5e9);
+  color: var(--ifm-color-success-dark, #2e7d32);
+  border-left: 4px solid var(--ifm-color-success, #4caf50);
+  border-radius: 0.25rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.encouragement {
+  padding: 0.75rem;
+  background-color: var(--ifm-color-info-lightest, #e3f2fd);
+  color: var(--ifm-color-info-dark, #1565c0);
+  border-left: 4px solid var(--ifm-color-info, #2196f3);
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.loading,
+.error {
+  padding: 1rem;
+  text-align: center;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.error {
+  background-color: var(--ifm-color-danger-lightest, #ffebee);
+  color: var(--ifm-color-danger-dark, #c62828);
+  border-left: 4px solid var(--ifm-color-danger, #f44336);
+  border-radius: 0.25rem;
+}
+
+/* Dark mode support */
+[data-theme='dark'] .card {
+  background-color: var(--ifm-background-surface-color);
+  border-color: var(--ifm-color-emphasis-300);
+}
+
+[data-theme='dark'] .maxPointsNotice {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: var(--ifm-color-success-lightest);
+}
+
+[data-theme='dark'] .encouragement {
+  background-color: rgba(33, 150, 243, 0.1);
+  color: var(--ifm-color-info-lightest);
+}
+
+[data-theme='dark'] .error {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: var(--ifm-color-danger-lightest);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .card {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .pointsNumber {
+    font-size: 2rem;
+  }
+
+  .pointsLabel {
+    font-size: 1rem;
+  }
+}

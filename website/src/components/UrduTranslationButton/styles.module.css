@@ -1,0 +1,118 @@
+/**
+ * UrduTranslationButton Styles
+ */
+
+.container {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--ifm-color-primary);
+  border-radius: 0.5rem;
+  background-color: var(--ifm-color-primary);
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button:hover:not(:disabled) {
+  background-color: var(--ifm-color-primary-dark);
+  border-color: var(--ifm-color-primary-dark);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.text {
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.error {
+  padding: 0.5rem 1rem;
+  background-color: var(--ifm-color-danger-lightest, #ffebee);
+  color: var(--ifm-color-danger-dark, #c62828);
+  border-left: 4px solid var(--ifm-color-danger, #f44336);
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+  max-width: 500px;
+}
+
+/* Dark mode support */
+[data-theme='dark'] .button {
+  background-color: var(--ifm-color-primary-lighter);
+  border-color: var(--ifm-color-primary-lighter);
+}
+
+[data-theme='dark'] .button:hover:not(:disabled) {
+  background-color: var(--ifm-color-primary);
+  border-color: var(--ifm-color-primary);
+}
+
+[data-theme='dark'] .error {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: var(--ifm-color-danger-lightest);
+  border-color: var(--ifm-color-danger);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .button {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .text {
+    font-size: 0.85rem;
+  }
+
+  .icon {
+    font-size: 1.1rem;
+  }
+}
+
+/* Add Translation button variant */
+.addButton {
+  background-color: var(--ifm-color-success);
+  border-color: var(--ifm-color-success);
+}
+
+.addButton:hover:not(:disabled) {
+  background-color: var(--ifm-color-success-dark);
+  border-color: var(--ifm-color-success-dark);
+}
+
+[data-theme='dark'] .addButton {
+  background-color: var(--ifm-color-success-light);
+  border-color: var(--ifm-color-success-light);
+}
+
+[data-theme='dark'] .addButton:hover:not(:disabled) {
+  background-color: var(--ifm-color-success);
+  border-color: var(--ifm-color-success);
+}

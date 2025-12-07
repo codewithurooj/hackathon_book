@@ -1,0 +1,408 @@
+openapi: 3.0.3
+info:
+  title: Urdu Translation API
+  description: API for managing Urdu translations of Physical AI textbook chapters
+  version: 1.0.0
+  contact:
+    name: Physical AI Book Team
+
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Development server
+  - url: https://api.physical-ai-book.com/api/v1
+    description: Production server
+
+tags:
+  - name: translations
+    description: Translation management operations
+  - name: points
+    description: User bonus points operations
+  - name: admin
+    description: Admin-only operations
+
+paths:
+  /translations/{chapter_id}:
+    get:
+      summary: Get Urdu translation for a chapter
+      description: Retrieves the Urdu translation for a specific chapter if it exists
+      tags:
+        - translations
+      operationId: getTranslation
+      parameters:
+        - name: chapter_id
+          in: path
+          required: true
+          description: Unique identifier for the chapter
+          schema:
+            type: string
+            example: "chapter-1-intro/what-is-physical-ai"
+      responses:
+        '200':
+          description: Translation found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Translation'
+        '404':
+          description: Translation not found for this chapter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /translations:
+    post:
+      summary: Submit a new Urdu translation
+      description: Submit an Urdu translation for a chapter (first submission wins)
+      tags:
+        - translations
+      operationId: submitTranslation
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TranslationSubmit'
+      responses:
+        '201':
+          description: Translation submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TranslationSubmitResult'
+        '400':
+          description: Invalid request (validation failed)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - user not logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict - translation already exists for this chapter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TranslationSubmitResult'
+              example:
+                success: false
+                error: "Translation already exists for this chapter"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users/{user_id}/translation-points:
+    get:
+      summary: Get user's translation bonus points
+      description: Retrieves the bonus points earned by a user for translation contributions
+      tags:
+        - points
+      operationId: getUserPoints
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: User identifier
+          schema:
+            type: string
+            example: "user-12345"
+      responses:
+        '200':
+          description: User points retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPoints'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /translations/check/{chapter_id}:
+    get:
+      summary: Check if a chapter has a translation
+      description: Quick check to see if a translation exists without fetching full content
+      tags:
+        - translations
+      operationId: checkTranslationExists
+      parameters:
+        - name: chapter_id
+          in: path
+          required: true
+          description: Unique identifier for the chapter
+          schema:
+            type: string
+            example: "chapter-1-intro/what-is-physical-ai"
+      responses:
+        '200':
+          description: Check result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chapter_id:
+                    type: string
+                  has_translation:
+                    type: boolean
+                  contributor_user_id:
+                    type: string
+                    nullable: true
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /admin/translations/bulk:
+    post:
+      summary: Bulk upload translations (admin only)
+      description: Upload multiple translations at once for seeding initial data
+      tags:
+        - admin
+      operationId: bulkUploadTranslations
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkTranslationUpload'
+      responses:
+        '200':
+          description: Bulk upload completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uploaded:
+                    type: integer
+                    description: Number of successfully uploaded translations
+                  failed:
+                    type: integer
+                    description: Number of failed uploads
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        chapter_id:
+                          type: string
+                        success:
+                          type: boolean
+                        error:
+                          type: string
+                          nullable: true
+        '401':
+          description: Unauthorized - admin access required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - user is not an admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token from authentication system
+
+  schemas:
+    Translation:
+      type: object
+      required:
+        - id
+        - chapter_id
+        - urdu_content
+        - contributor
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique translation identifier
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        chapter_id:
+          type: string
+          description: Chapter identifier
+          example: "chapter-1-intro/what-is-physical-ai"
+        urdu_content:
+          type: string
+          description: Full Urdu translation of the chapter
+          example: "فزیکل اے آئی کیا ہے؟..."
+        contributor:
+          type: object
+          required:
+            - user_id
+          properties:
+            user_id:
+              type: string
+              description: ID of user who contributed the translation
+            username:
+              type: string
+              nullable: true
+              description: Display name of contributor
+        created_at:
+          type: string
+          format: date-time
+          description: When the translation was submitted
+          example: "2025-12-03T10:30:00Z"
+
+    TranslationSubmit:
+      type: object
+      required:
+        - chapter_id
+        - urdu_content
+      properties:
+        chapter_id:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Unique identifier for the chapter
+          example: "chapter-1-intro/what-is-physical-ai"
+        urdu_content:
+          type: string
+          minLength: 10
+          description: Urdu translation content (must contain at least 50% Urdu Unicode characters)
+          example: "فزیکل اے آئی کیا ہے؟..."
+
+    TranslationSubmitResult:
+      type: object
+      required:
+        - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the submission was successful
+        translation_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: ID of the created translation (if successful)
+        points_awarded:
+          type: integer
+          nullable: true
+          minimum: 0
+          maximum: 50
+          description: Bonus points awarded for this translation
+        error:
+          type: string
+          nullable: true
+          description: Error message if submission failed
+
+    UserPoints:
+      type: object
+      required:
+        - user_id
+        - translation_bonus_points
+        - chapters_translated
+        - breakdown
+      properties:
+        user_id:
+          type: string
+          description: User identifier
+          example: "user-12345"
+        username:
+          type: string
+          nullable: true
+          description: User display name
+          example: "john_doe"
+        translation_bonus_points:
+          type: integer
+          minimum: 0
+          maximum: 50
+          description: Total bonus points from translations (capped at 50)
+          example: 37
+        chapters_translated:
+          type: integer
+          minimum: 0
+          description: Number of chapters user has translated
+          example: 37
+        breakdown:
+          type: array
+          description: Detailed breakdown of points per chapter
+          items:
+            type: object
+            properties:
+              chapter_id:
+                type: string
+              points:
+                type: integer
+              translated_at:
+                type: string
+                format: date-time
+
+    BulkTranslationUpload:
+      type: object
+      required:
+        - translations
+      properties:
+        translations:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+              - chapter_id
+              - urdu_content
+            properties:
+              chapter_id:
+                type: string
+              urdu_content:
+                type: string
+
+    Error:
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          type: string
+          description: Error message
+          example: "Translation not found for this chapter"
+        code:
+          type: string
+          nullable: true
+          description: Error code for programmatic handling
+          example: "TRANSLATION_NOT_FOUND"

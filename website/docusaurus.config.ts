@@ -36,13 +36,10 @@ const config: Config = {
     locales: ['en'],
   },
 
-  scripts: [
-    '/static/scripts/text-selection.js',
-  ],
-
   // Expose environment variables to client-side code
   clientModules: [
     require.resolve('./src/clientModules/env.js'),
+    require.resolve('./src/clientModules/textSelection.js'),
   ],
 
   presets: [
