@@ -12,6 +12,12 @@ import UrduTranslationButton from '@site/src/components/UrduTranslationButton';
 export default function LayoutWrapper(props) {
   // Extract chapter ID from the document metadata
   const { content } = props;
+
+  // Guard against undefined content (can happen during SSG for some page types)
+  if (!content || !content.metadata) {
+    return <Layout {...props} />;
+  }
+
   const { metadata } = content;
   const chapterId = metadata?.id || metadata?.permalink?.replace(/^\//, '').replace(/\//g, '-');
 
