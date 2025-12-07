@@ -51,7 +51,7 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           routeBasePath: 'docs', // Serve docs at /docs
           // Remove edit links for now
-          editUrl: 'https://github.com/codewithurooj/my_book/edit/main/',
+          editUrl: 'https://github.com/codewithurooj/hackathon_book/edit/main/',
         },
         blog: false, // Disable blog for textbook
         theme: {
@@ -81,7 +81,7 @@ const config: Config = {
           label: 'Learn',
         },
         {
-          href: 'https://github.com/codewithurooj/my_book',
+          href: 'https://github.com/codewithurooj/hackathon_book',
           label: 'GitHub',
           position: 'right',
         },
@@ -103,7 +103,7 @@ const config: Config = {
         {
           title: 'Community',
           items: [
-            {label: 'GitHub', href: 'https://github.com/codewithurooj/my_book'},
+            {label: 'GitHub', href: 'https://github.com/codewithurooj/hackathon_book'},
             {label: 'ROS Answers', href: 'https://answers.ros.org/'},
             {label: 'NVIDIA Developer Forum', href: 'https://forums.developer.nvidia.com/'},
           ],
