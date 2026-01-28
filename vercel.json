@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "framework": "docusaurus-2",
+  "installCommand": "cd website && npm install",
+  "buildCommand": "cd website && npm run build",
+  "outputDirectory": "website/build",
+  "env": {
+    "REACT_APP_BACKEND_URL": "@react-app-backend-url"
+  }
+}
