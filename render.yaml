@@ -1,10 +1,13 @@
 services:
   - type: web
     name: physical-ai-book-backend
-    env: python
+    runtime: python
     region: singapore
-    buildCommand: pip install -r backend/requirements.txt
+    plan: free
+    branch: main
+    buildCommand: cd backend && pip install -r requirements.txt
     startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/health
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.6
@@ -16,3 +19,18 @@ services:
         value: text-embedding-3-small
       - key: CHAT_MODEL
         value: gpt-4o
+      # Secret variables - set these in Render Dashboard
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: QDRANT_URL
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: QDRANT_COLLECTION_NAME
+        value: physical-ai-book
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: BACKEND_API_KEY
+        sync: false
