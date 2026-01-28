@@ -1,43 +1,67 @@
-/**
- * Swizzled DocItem/Layout component
- *
- * This wraps the original Docusaurus DocItem/Layout to inject the
- * UrduTranslationButton at the start of each chapter.
- */
-
 import React from 'react';
-import Layout from '@theme-original/DocItem/Layout';
+import clsx from 'clsx';
+import {useWindowSize} from '@docusaurus/theme-common';
+import {useDoc} from '@docusaurus/plugin-content-docs/client';
+import DocItemPaginator from '@theme/DocItem/Paginator';
+import DocVersionBanner from '@theme/DocVersionBanner';
+import DocVersionBadge from '@theme/DocVersionBadge';
+import DocItemFooter from '@theme/DocItem/Footer';
+import DocItemTOCMobile from '@theme/DocItem/TOC/Mobile';
+import DocItemTOCDesktop from '@theme/DocItem/TOC/Desktop';
+import DocItemContent from '@theme/DocItem/Content';
+import DocBreadcrumbs from '@theme/DocBreadcrumbs';
+import ContentVisibility from '@theme/ContentVisibility';
 import UrduTranslationButton from '@site/src/components/UrduTranslationButton';
+import styles from './styles.module.css';
+/**
+ * Decide if the toc should be rendered, on mobile or desktop viewports
+ */
+function useDocTOC() {
+  const {frontMatter, toc} = useDoc();
+  const windowSize = useWindowSize();
+  const hidden = frontMatter.hide_table_of_contents;
+  const canRender = !hidden && toc.length > 0;
+  const mobile = canRender ? <DocItemTOCMobile /> : undefined;
+  const desktop =
+    canRender && (windowSize === 'desktop' || windowSize === 'ssr') ? (
+      <DocItemTOCDesktop />
+    ) : undefined;
+  return {
+    hidden,
+    mobile,
+    desktop,
+  };
+}
+export default function DocItemLayout({children}) {
+  const docTOC = useDocTOC();
+  const {metadata} = useDoc();
 
-export default function LayoutWrapper(props) {
-  // Extract chapter ID from the document metadata
-  const { content } = props;
-
-  // Guard against undefined content (can happen during SSG for some page types)
-  if (!content || !content.metadata) {
-    return <Layout {...props} />;
-  }
-
-  const { metadata } = content;
-  const chapterId = metadata?.id || metadata?.permalink?.replace(/^\//, '').replace(/\//g, '-');
-
-  // Check if user is authenticated
-  // In production, this should check actual auth state from context/Redux
-  // For now, we'll check for a user ID in localStorage or sessionStorage
-  const isAuthenticated = typeof window !== 'undefined' && (
-    localStorage.getItem('user_id') !== null ||
-    sessionStorage.getItem('user_id') !== null
-  );
+  // Extract chapter ID for translation button
+  const chapterId = metadata?.id || metadata?.permalink?.replace(/\//g, '-');
 
   return (
-    <>
-      {chapterId && (
-        <UrduTranslationButton
-          chapterId={chapterId}
-          isAuthenticated={isAuthenticated}
-        />
-      )}
-      <Layout {...props} />
-    </>
+    <div className="row">
+      <div className={clsx('col', !docTOC.hidden && styles.docItemCol)}>
+        <ContentVisibility metadata={metadata} />
+        <DocVersionBanner />
+        <div className={styles.docItemContainer}>
+          <article>
+            <DocBreadcrumbs />
+            <DocVersionBadge />
+            {docTOC.mobile}
+            {/* Add Urdu Translation Button */}
+            {chapterId && (
+              <div style={{ marginBottom: '1.5rem' }}>
+                <UrduTranslationButton chapterId={chapterId} />
+              </div>
+            )}
+            <DocItemContent>{children}</DocItemContent>
+            <DocItemFooter />
+          </article>
+          <DocItemPaginator />
+        </div>
+      </div>
+      {docTOC.desktop && <div className="col col--3">{docTOC.desktop}</div>}
+    </div>
   );
 }

@@ -1,255 +1,223 @@
 /**
  * UrduTranslationButton Component
  *
- * Toggle button to switch between English and Urdu content for each chapter.
- * Also allows authenticated users to contribute translations.
- *
- * Features:
- * - Fetches Urdu translation from API
- * - Caches translations in memory for performance
- * - Persists language preference in localStorage
- * - Handles loading and error states
- * - Allows translation submission via modal
- * - Only visible for authenticated users
+ * Button that translates page content to Urdu using free translation API
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
-import TranslationSubmitModal from '../TranslationSubmitModal';
+import React, { useState, useEffect } from 'react';
 import styles from './styles.module.css';
 
-// API configuration
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1';
+const UrduTranslationButton = ({ chapterId }) => {
+  const [isUrdu, setIsUrdu] = useState(false);
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [originalContent, setOriginalContent] = useState('');
+  const [originalTocContent, setOriginalTocContent] = useState('');
 
-// In-memory cache for translations (survives component re-renders but not page reloads)
-const translationCache = new Map();
-
-const UrduTranslationButton = ({ chapterId, isAuthenticated = false }) => {
-  const [currentLanguage, setCurrentLanguage] = useState('en');
-  const [urduTranslation, setUrduTranslation] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [translationExists, setTranslationExists] = useState(false);
-  const [showSubmitModal, setShowSubmitModal] = useState(false);
-
-  // Load language preference from localStorage on mount
   useEffect(() => {
-    const savedLanguage = localStorage.getItem(`chapter-${chapterId}-language`);
-    if (savedLanguage === 'ur') {
-      setCurrentLanguage('ur');
-      // Load translation if switching to Urdu
-      loadTranslation();
+    // Load saved preference
+    const saved = localStorage.getItem(`translate-${chapterId}`);
+    if (saved === 'ur' && originalContent) {
+      setIsUrdu(true);
     }
+  }, [chapterId, originalContent]);
 
-    // Check if translation exists
-    checkTranslationExists();
-  }, [chapterId]);
-
-  /**
-   * Check if Urdu translation exists for this chapter
-   */
-  const checkTranslationExists = useCallback(async () => {
+  const translateText = async (text) => {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/translations/check/${chapterId}`
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setTranslationExists(data.exists);
-      }
-    } catch (err) {
-      console.error('Error checking translation existence:', err);
-      // Default to false to show "Add Translation" button
-      setTranslationExists(false);
-    }
-  }, [chapterId]);
-
-  /**
-   * Load Urdu translation from API (with caching)
-   */
-  const loadTranslation = useCallback(async () => {
-    // Check cache first
-    if (translationCache.has(chapterId)) {
-      setUrduTranslation(translationCache.get(chapterId));
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/translations/${chapterId}`
-      );
+      // Using LibreTranslate free API
+      const response = await fetch('https://libretranslate.de/translate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          q: text,
+          source: 'en',
+          target: 'ur',
+          format: 'text'
+        })
+      });
 
       if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error('Translation not available for this chapter yet.');
-        }
-        throw new Error('Failed to load translation');
+        throw new Error('Translation service unavailable');
       }
 
       const data = await response.json();
-
-      // Cache the translation
-      translationCache.set(chapterId, data);
-      setUrduTranslation(data);
-    } catch (err) {
-      console.error('Error loading translation:', err);
-      setError(err.message);
-      // Revert to English on error
-      setCurrentLanguage('en');
-      localStorage.setItem(`chapter-${chapterId}-language`, 'en');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [chapterId]);
-
-  /**
-   * Toggle between English and Urdu
-   */
-  const toggleLanguage = useCallback(async () => {
-    const newLanguage = currentLanguage === 'en' ? 'ur' : 'en';
-
-    // If switching to Urdu and translation not loaded yet, fetch it
-    if (newLanguage === 'ur' && !urduTranslation) {
-      await loadTranslation();
-    }
-
-    // Update state and persist preference
-    setCurrentLanguage(newLanguage);
-    localStorage.setItem(`chapter-${chapterId}-language`, newLanguage);
-
-    // Update DOM content
-    updateContentDisplay(newLanguage);
-  }, [currentLanguage, urduTranslation, loadTranslation, chapterId]);
-
-  /**
-   * Update chapter content based on selected language
-   */
-  const updateContentDisplay = useCallback((language) => {
-    const contentElement = document.querySelector('article.markdown');
-
-    if (!contentElement) {
-      console.warn('Content element not found');
-      return;
-    }
-
-    if (language === 'ur' && urduTranslation) {
-      // Store original English content if not already stored
-      if (!contentElement.dataset.originalContent) {
-        contentElement.dataset.originalContent = contentElement.innerHTML;
-      }
-
-      // Replace with Urdu content (rendered as markdown)
-      contentElement.innerHTML = renderMarkdown(urduTranslation.urdu_content);
-      contentElement.style.direction = 'rtl';
-      contentElement.style.textAlign = 'right';
-    } else {
-      // Restore original English content
-      if (contentElement.dataset.originalContent) {
-        contentElement.innerHTML = contentElement.dataset.originalContent;
-        contentElement.style.direction = 'ltr';
-        contentElement.style.textAlign = 'left';
+      return data.translatedText;
+    } catch (error) {
+      console.error('Translation error:', error);
+      // Fallback: Try MyMemory API
+      try {
+        const fallbackResponse = await fetch(
+          `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ur`
+        );
+        const fallbackData = await fallbackResponse.json();
+        return fallbackData.responseData.translatedText;
+      } catch (fallbackError) {
+        throw new Error('All translation services failed');
       }
     }
-  }, [urduTranslation]);
-
-  /**
-   * Simple markdown to HTML renderer (basic implementation)
-   */
-  const renderMarkdown = (markdown) => {
-    return markdown
-      .replace(/\n\n/g, '</p><p>')
-      .replace(/\n/g, '<br>')
-      .replace(/^/, '<p>')
-      .replace(/$/, '</p>');
   };
 
-  /**
-   * Handle successful translation submission
-   */
-  const handleSubmissionSuccess = useCallback((result) => {
-    console.log('Translation submitted successfully:', result);
+  const translateToUrdu = async () => {
+    setIsTranslating(true);
 
-    // Clear cache and reload
-    translationCache.delete(chapterId);
+    try {
+      const article = document.querySelector('article');
+      if (!article) {
+        alert('Content not found');
+        return;
+      }
 
-    // Update state
-    setTranslationExists(true);
-    setShowSubmitModal(false);
+      // Store original HTML if not stored
+      if (!originalContent) {
+        setOriginalContent(article.innerHTML);
+      }
 
-    // Reload translation if in Urdu mode
-    if (currentLanguage === 'ur') {
-      loadTranslation();
+      // Get all text nodes from article
+      const textNodes = [];
+      const walker = document.createTreeWalker(
+        article,
+        NodeFilter.SHOW_TEXT,
+        {
+          acceptNode: (node) => {
+            // Skip empty text nodes and script/style content
+            if (node.textContent.trim().length === 0) return NodeFilter.FILTER_REJECT;
+            if (node.parentElement.tagName === 'SCRIPT') return NodeFilter.FILTER_REJECT;
+            if (node.parentElement.tagName === 'STYLE') return NodeFilter.FILTER_REJECT;
+            if (node.parentElement.tagName === 'CODE') return NodeFilter.FILTER_REJECT;
+            if (node.parentElement.tagName === 'PRE') return NodeFilter.FILTER_REJECT;
+            return NodeFilter.FILTER_ACCEPT;
+          }
+        }
+      );
+
+      while (walker.nextNode()) {
+        textNodes.push(walker.currentNode);
+      }
+
+      // Also get text nodes from TOC (table of contents on right side)
+      const toc = document.querySelector('.table-of-contents');
+      if (toc) {
+        // Store original TOC HTML if not stored
+        if (!originalTocContent) {
+          setOriginalTocContent(toc.innerHTML);
+        }
+
+        const tocWalker = document.createTreeWalker(
+          toc,
+          NodeFilter.SHOW_TEXT,
+          {
+            acceptNode: (node) => {
+              if (node.textContent.trim().length === 0) return NodeFilter.FILTER_REJECT;
+              return NodeFilter.FILTER_ACCEPT;
+            }
+          }
+        );
+
+        while (tocWalker.nextNode()) {
+          textNodes.push(tocWalker.currentNode);
+        }
+
+        // Apply RTL to TOC
+        toc.style.direction = 'rtl';
+        toc.style.textAlign = 'right';
+      }
+
+      // Collect all texts to translate
+      const textsToTranslate = textNodes
+        .map(node => node.textContent.trim())
+        .filter(text => text.length > 0);
+
+      // Translate all texts in parallel
+      const translationPromises = textsToTranslate.map(text =>
+        translateText(text).catch(error => {
+          console.error('Failed to translate:', text, error);
+          return text; // Return original text on failure
+        })
+      );
+
+      const translatedTexts = await Promise.all(translationPromises);
+
+      // Apply all translations at once
+      let translationIndex = 0;
+      for (const node of textNodes) {
+        const originalText = node.textContent.trim();
+        if (originalText.length > 0) {
+          node.textContent = translatedTexts[translationIndex];
+          translationIndex++;
+        }
+      }
+
+      // Apply RTL styling to article
+      article.style.direction = 'rtl';
+      article.style.textAlign = 'right';
+      article.setAttribute('lang', 'ur');
+
+      setIsUrdu(true);
+      localStorage.setItem(`translate-${chapterId}`, 'ur');
+      setIsTranslating(false);
+
+    } catch (error) {
+      console.error('Translation error:', error);
+      alert('Translation failed. Please try again.');
+      setIsTranslating(false);
+    }
+  };
+
+  const restoreEnglish = () => {
+    const article = document.querySelector('article');
+    if (article && originalContent) {
+      article.innerHTML = originalContent;
+      article.style.direction = 'ltr';
+      article.style.textAlign = 'left';
+      article.removeAttribute('lang');
     }
 
-    // Show success message
-    alert(`Translation submitted successfully! You earned ${result.points_awarded} point(s).`);
-  }, [chapterId, currentLanguage, loadTranslation]);
-
-  // Update content display when urduTranslation or currentLanguage changes
-  useEffect(() => {
-    if (currentLanguage === 'ur' && urduTranslation) {
-      updateContentDisplay('ur');
+    // Restore TOC content
+    const toc = document.querySelector('.table-of-contents');
+    if (toc && originalTocContent) {
+      toc.innerHTML = originalTocContent;
+      toc.style.direction = 'ltr';
+      toc.style.textAlign = 'left';
     }
-  }, [urduTranslation, currentLanguage, updateContentDisplay]);
 
-  // Don't show anything if not authenticated
-  if (!isAuthenticated) {
-    return null;
-  }
+    setIsUrdu(false);
+    localStorage.setItem(`translate-${chapterId}`, 'en');
+  };
+
+  const toggleTranslation = () => {
+    if (!isUrdu) {
+      translateToUrdu();
+    } else {
+      restoreEnglish();
+    }
+  };
 
   return (
-    <>
-      <div className={styles.container}>
-        {translationExists ? (
-          // Show toggle button if translation exists
-          <button
-            className={styles.button}
-            onClick={toggleLanguage}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <span>Loading...</span>
-            ) : (
-              <>
-                <span className={styles.icon}>
-                  {currentLanguage === 'en' ? '🔄' : '↩️'}
-                </span>
-                <span className={styles.text}>
-                  {currentLanguage === 'en' ? 'اردو میں پڑھیں' : 'Read in English'}
-                </span>
-              </>
-            )}
-          </button>
+    <div className={styles.container}>
+      <button
+        className={styles.button}
+        onClick={toggleTranslation}
+        disabled={isTranslating}
+        title={isUrdu ? 'Read in English' : 'Translate to Urdu'}
+      >
+        {isTranslating ? (
+          <>
+            <span className={styles.icon}>⏳</span>
+            <span className={styles.text}>Translating...</span>
+          </>
         ) : (
-          // Show "Add Translation" button if translation doesn't exist
-          <button
-            className={`${styles.button} ${styles.addButton}`}
-            onClick={() => setShowSubmitModal(true)}
-          >
-            <span className={styles.icon}>➕</span>
-            <span className={styles.text}>Add Urdu Translation</span>
-          </button>
+          <>
+            <span className={styles.icon}>
+              {isUrdu ? '🔙' : '🔄'}
+            </span>
+            <span className={styles.text}>
+              {isUrdu ? 'Read in English' : 'اردو میں پڑھیں'}
+            </span>
+          </>
         )}
-
-        {error && (
-          <div className={styles.error}>
-            {error}
-          </div>
-        )}
-      </div>
-
-      {/* Translation submission modal */}
-      {showSubmitModal && (
-        <TranslationSubmitModal
-          chapterId={chapterId}
-          onClose={() => setShowSubmitModal(false)}
-          onSuccess={handleSubmissionSuccess}
-        />
-      )}
-    </>
+      </button>
+    </div>
   );
 };
 

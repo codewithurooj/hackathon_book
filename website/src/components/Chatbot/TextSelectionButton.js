@@ -32,9 +32,12 @@ function TextSelectionButton({ onAskAboutThis }) {
     };
   }, [isVisible]);
 
-  const handleClick = () => {
-    onAskAboutThis(selectedText);
+  const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const textToSend = selectedText; // Capture text before any state changes
     setIsVisible(false); // Hide button after clicking
+    onAskAboutThis(textToSend);
   };
 
   if (!isVisible) {
@@ -50,7 +53,12 @@ function TextSelectionButton({ onAskAboutThis }) {
   };
 
   return (
-    <div className={styles.askButton} style={buttonStyle} onClick={handleClick}>
+    <div
+      className={styles.askButton}
+      style={buttonStyle}
+      onMouseDown={handleClick}
+      onTouchStart={handleClick}
+    >
       Ask about this
     </div>
   );

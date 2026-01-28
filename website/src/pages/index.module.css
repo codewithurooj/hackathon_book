@@ -1,8 +1,23 @@
 /**
  * Modern Homepage Styles for Physical AI Book
+ * Enhanced with robotics-themed animations and tech aesthetics
  */
 
-/* Hero Banner */
+/* ===================================
+   CSS Variables for Homepage
+   =================================== */
+
+:root {
+  --hero-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --tech-gradient: linear-gradient(135deg, #00d4ff 0%, #667eea 50%, #764ba2 100%);
+  --glow-cyan: 0 0 30px rgba(0, 212, 255, 0.4);
+  --glow-purple: 0 0 30px rgba(139, 92, 246, 0.4);
+}
+
+/* ===================================
+   Hero Banner - Circuit Grid Background
+   =================================== */
+
 .heroBanner {
   padding: 8rem 2rem 6rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -10,6 +25,7 @@
   overflow: hidden;
 }
 
+/* Circuit grid pattern background */
 .heroBanner::before {
   content: '';
   position: absolute;
@@ -17,10 +33,53 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.1), transparent 50%),
-              radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.08), transparent 50%);
+  background-image:
+    /* Radial glows */
+    radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+    /* Circuit grid pattern */
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    /* Larger grid */
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 2px, transparent 2px),
+    linear-gradient(rgba(255, 255, 255, 0.02) 2px, transparent 2px);
+  background-size:
+    100% 100%,
+    100% 100%,
+    40px 40px,
+    40px 40px,
+    200px 200px,
+    200px 200px;
+  pointer-events: none;
+  animation: gridPulse 8s ease-in-out infinite;
+}
+
+@keyframes gridPulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Animated circuit lines overlay */
+.heroBanner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 50h30M60 50h30M50 10v30M50 60v30' stroke='rgba(255,255,255,0.05)' stroke-width='2' fill='none'/%3E%3Ccircle cx='50' cy='50' r='4' fill='rgba(255,255,255,0.03)'/%3E%3Ccircle cx='10' cy='50' r='2' fill='rgba(0,212,255,0.1)'/%3E%3Ccircle cx='90' cy='50' r='2' fill='rgba(0,212,255,0.1)'/%3E%3Ccircle cx='50' cy='10' r='2' fill='rgba(0,212,255,0.1)'/%3E%3Ccircle cx='50' cy='90' r='2' fill='rgba(0,212,255,0.1)'/%3E%3C/svg%3E");
+  background-size: 100px 100px;
+  opacity: 0.5;
   pointer-events: none;
 }
+
+/* ===================================
+   Hero Content Layout
+   =================================== */
 
 .heroContent {
   display: grid;
@@ -38,44 +97,92 @@
   text-align: left;
 }
 
+/* ===================================
+   Badge - Tech Style
+   =================================== */
+
 .badge {
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.2);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
-  padding: 0.5rem 1.25rem;
+  padding: 0.6rem 1.5rem;
   border-radius: 50px;
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: badgeGlow 3s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
 }
+
+.badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: badgeShine 4s ease-in-out infinite;
+}
+
+@keyframes badgeShine {
+  0%, 100% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+}
+
+@keyframes badgeGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+  }
+}
+
+/* ===================================
+   Hero Title & Text
+   =================================== */
 
 .heroTitle {
   font-size: 3.5rem;
   font-weight: 800;
   margin: 1rem 0;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
 }
 
 .heroSubtitle {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   margin: 1rem 0;
   opacity: 0.95;
   font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 .heroDescription {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   line-height: 1.8;
   opacity: 0.9;
   margin: 1.5rem 0 2rem;
   max-width: 600px;
 }
 
+/* ===================================
+   CTA Buttons - Enhanced
+   =================================== */
+
 .buttons {
   display: flex;
-  gap: 1rem;
+  gap: 1.25rem;
   margin-bottom: 3rem;
   flex-wrap: wrap;
 }
@@ -84,57 +191,128 @@
   background: white;
   color: #667eea;
   border: none;
-  font-weight: 600;
-  transition: all 0.3s;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.875rem 2rem;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.primaryButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .primaryButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
   color: #764ba2;
   background: white;
   text-decoration: none;
 }
 
+.primaryButton:hover::before {
+  opacity: 1;
+}
+
 .secondaryButton {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   color: white;
   border: 2px solid rgba(255, 255, 255, 0.3);
   font-weight: 600;
-  transition: all 0.3s;
+  font-size: 1rem;
+  padding: 0.875rem 2rem;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .secondaryButton:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   text-decoration: none;
   color: white;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
 }
+
+/* ===================================
+   Stats Section - Tech Cards
+   =================================== */
 
 .stats {
   display: flex;
-  gap: 3rem;
+  gap: 2rem;
   margin-top: 2rem;
 }
 
 .stat {
   text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 1.25rem 1.5rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  min-width: 90px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.8), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.stat:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(0, 212, 255, 0.3);
+}
+
+.stat:hover::before {
+  opacity: 1;
 }
 
 .statNumber {
-  font-size: 2.5rem;
+  font-size: 2.25rem;
   font-weight: 800;
   line-height: 1;
+  background: linear-gradient(135deg, #fff 0%, rgba(0, 212, 255, 0.8) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .statLabel {
-  font-size: 0.9rem;
-  opacity: 0.9;
+  font-size: 0.85rem;
+  opacity: 0.85;
   margin-top: 0.5rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
+
+/* ===================================
+   Hero Image - Robot with Glow
+   =================================== */
 
 .heroImage {
   display: flex;
@@ -143,87 +321,169 @@
   position: relative;
 }
 
+/* Outer glow ring */
 .imageGlow {
   position: absolute;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent 70%);
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(0, 212, 255, 0.25) 0%, rgba(139, 92, 246, 0.15) 40%, transparent 70%);
   border-radius: 50%;
-  animation: pulse 4s ease-in-out infinite;
+  animation: glowPulse 4s ease-in-out infinite;
 }
 
-@keyframes pulse {
+@keyframes glowPulse {
   0%, 100% {
     transform: scale(1);
-    opacity: 0.5;
+    opacity: 0.6;
   }
   50% {
-    transform: scale(1.1);
-    opacity: 0.8;
+    transform: scale(1.15);
+    opacity: 1;
   }
 }
 
+/* Circuit ring around robot */
+.heroImage::before {
+  content: '';
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border: 2px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  animation: rotate 30s linear infinite;
+}
+
+.heroImage::after {
+  content: '';
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 50%;
+  animation: rotate 45s linear infinite reverse;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Robot icon with tech effects */
 .robotIcon {
   font-size: 12rem;
-  animation: float 3s ease-in-out infinite;
+  animation: robotFloat 4s ease-in-out infinite;
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
 }
 
-@keyframes float {
+@keyframes robotFloat {
   0%, 100% {
-    transform: translateY(0);
+    transform: translateY(0) rotate(-2deg);
+  }
+  25% {
+    transform: translateY(-15px) rotate(0deg);
   }
   50% {
-    transform: translateY(-20px);
+    transform: translateY(-25px) rotate(2deg);
+  }
+  75% {
+    transform: translateY(-15px) rotate(0deg);
   }
 }
 
-/* Section Header */
+/* ===================================
+   Section Headers
+   =================================== */
+
 .sectionHeader {
   text-align: center;
   margin-bottom: 4rem;
+  position: relative;
 }
 
 .sectionHeader h2 {
-  font-size: 2.5rem;
+  font-size: 2.75rem;
   font-weight: 800;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 1rem;
+  letter-spacing: -0.02em;
 }
 
 .sectionHeader p {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   color: #64748b;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-/* Featured Book Section */
+/* Decorative line under header */
+.sectionHeader::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  margin: 1.5rem auto 0;
+  border-radius: 2px;
+}
+
+/* ===================================
+   Featured Book Section
+   =================================== */
+
 .featuredBook {
-  padding: 6rem 2rem;
-  background: white;
+  padding: 7rem 2rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  position: relative;
+}
+
+/* Subtle circuit pattern */
+.featuredBook::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0v15M30 45v15M0 30h15M45 30h15' stroke='%23e2e8f0' stroke-width='1' fill='none'/%3E%3Ccircle cx='30' cy='30' r='3' fill='%23e2e8f0'/%3E%3C/svg%3E");
+  background-size: 60px 60px;
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .bookGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 2.5rem;
   max-width: 1200px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
+
+/* ===================================
+   Book Cards - Enhanced Tech Style
+   =================================== */
 
 .bookCard {
   background: white;
-  border: 2px solid #e2e8f0;
-  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
   padding: 2.5rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
 }
 
+/* Gradient border effect on hover */
 .bookCard::before {
   content: '';
   position: absolute;
@@ -231,24 +491,56 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(90deg, #00d4ff, #667eea, #764ba2);
   transform: scaleX(0);
-  transition: transform 0.3s;
+  transition: transform 0.4s ease;
+  border-radius: 24px 24px 0 0;
+}
+
+/* Circuit corner decoration */
+.bookCard::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 80px;
+  height: 80px;
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M80 40H50M60 80V50M50 50h10v10' stroke='%23e2e8f0' stroke-width='1' fill='none'/%3E%3Ccircle cx='50' cy='50' r='3' fill='%23e2e8f0'/%3E%3C/svg%3E");
+  opacity: 0.6;
+  transition: all 0.4s ease;
 }
 
 .bookCard:hover::before {
   transform: scaleX(1);
 }
 
-.bookCard:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
-  border-color: #c7d2fe;
+.bookCard:hover::after {
+  opacity: 1;
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M80 40H50M60 80V50M50 50h10v10' stroke='%2300d4ff' stroke-width='1' fill='none'/%3E%3Ccircle cx='50' cy='50' r='3' fill='%2300d4ff'/%3E%3C/svg%3E");
 }
 
+.bookCard:hover {
+  transform: translateY(-12px);
+  box-shadow:
+    0 25px 50px rgba(102, 126, 234, 0.15),
+    0 0 0 1px rgba(0, 212, 255, 0.2);
+  border-color: rgba(0, 212, 255, 0.3);
+}
+
+/* Card icon with glow */
 .cardIcon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+  font-size: 3.5rem;
+  margin-bottom: 1.25rem;
+  display: inline-block;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.bookCard:hover .cardIcon {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
 }
 
 .bookCard h3 {
@@ -256,12 +548,14 @@
   font-weight: 700;
   color: #1e293b;
   margin: 0.5rem 0 1rem;
+  letter-spacing: -0.01em;
 }
 
 .bookCard p {
   color: #64748b;
-  line-height: 1.7;
+  line-height: 1.75;
   margin-bottom: 1.5rem;
+  font-size: 1rem;
 }
 
 .cardLink {
@@ -271,96 +565,190 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.cardLink::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
 }
 
 .cardLink:hover {
-  gap: 0.75rem;
+  gap: 1rem;
+  color: #764ba2;
   text-decoration: none;
 }
 
-/* Tech Stack Section */
+.cardLink:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ===================================
+   Tech Stack Section
+   =================================== */
+
 .techStack {
-  padding: 6rem 2rem;
-  background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
+  padding: 7rem 2rem;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  position: relative;
 }
 
 .techGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 2rem;
   max-width: 1000px;
   margin: 0 auto;
 }
 
+/* Tech Cards - Enhanced */
 .techCard {
   background: white;
   border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 2rem 1.5rem;
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
   text-align: center;
-  transition: all 0.3s;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated border on hover */
+.techCard::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, #00d4ff, #667eea, #764ba2, #00d4ff);
+  background-size: 300% 300%;
+  border-radius: 22px;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.techCard:hover::before {
+  opacity: 1;
+  animation: borderRotate 3s linear infinite;
+}
+
+@keyframes borderRotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .techCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  border-color: #c7d2fe;
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 212, 255, 0.15);
+  background: white;
 }
 
 .techIcon {
-  font-size: 3rem;
+  font-size: 3.5rem;
   margin-bottom: 1rem;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.techCard:hover .techIcon {
+  transform: scale(1.15) rotate(5deg);
+  filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.4));
 }
 
 .techCard h4 {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: #1e293b;
-  margin: 0.5rem 0;
+  margin: 0.75rem 0;
+  letter-spacing: -0.01em;
 }
 
 .techCard p {
   color: #64748b;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 
-/* AI Assistant Section */
+/* ===================================
+   AI Assistant Section
+   =================================== */
+
 .aiSection {
-  padding: 6rem 2rem;
+  padding: 7rem 2rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Tech grid background */
+.aiSection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
 }
 
 .aiContent {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+  gap: 5rem;
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .aiText h2 {
-  font-size: 2.5rem;
+  font-size: 2.75rem;
   font-weight: 800;
   color: white;
   margin: 1rem 0;
+  letter-spacing: -0.02em;
 }
 
 .aiBadge {
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.2);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
-  padding: 0.5rem 1.25rem;
+  padding: 0.6rem 1.25rem;
   border-radius: 50px;
   font-size: 0.9rem;
   font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .aiText p {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   line-height: 1.8;
   opacity: 0.95;
   margin: 1.5rem 0;
@@ -373,85 +761,135 @@
 }
 
 .aiFeatures li {
-  padding: 0.75rem 0;
-  font-size: 1.05rem;
+  padding: 0.875rem 0;
+  font-size: 1.1rem;
   opacity: 0.95;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.aiFeatures li:hover {
+  transform: translateX(8px);
+  opacity: 1;
 }
 
 .aiCta {
-  margin-top: 2rem;
-  padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.15);
+  margin-top: 2.5rem;
+  padding: 1.75rem;
+  background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(10px);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+}
+
+.aiCta:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
 }
 
 .aiCta span {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 600;
+}
+
+/* AI Demo - Chat Preview */
+.aiDemo {
+  position: relative;
 }
 
 .chatPreview {
   background: white;
-  border-radius: 20px;
+  border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
+  transition: transform 0.5s ease;
+}
+
+.chatPreview:hover {
+  transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
 }
 
 .chatHeader {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 1rem 1.5rem;
+  padding: 1.25rem 1.5rem;
   display: flex;
-  gap: 0.5rem;
+  gap: 0.6rem;
   align-items: center;
 }
 
 .chatDot {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.4);
+  transition: all 0.3s ease;
+}
+
+.chatDot:nth-child(1) {
+  background: #ff5f57;
+}
+
+.chatDot:nth-child(2) {
+  background: #ffbd2e;
+}
+
+.chatDot:nth-child(3) {
+  background: #28ca41;
 }
 
 .chatBody {
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  min-height: 180px;
 }
 
 .userMessage {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 0.75rem 1.25rem;
-  border-radius: 18px;
+  padding: 0.875rem 1.5rem;
+  border-radius: 20px;
   border-bottom-right-radius: 4px;
   align-self: flex-end;
-  max-width: 80%;
+  max-width: 75%;
   font-size: 0.95rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 .botMessage {
-  background: #f1f5f9;
+  background: white;
   color: #334155;
-  padding: 0.75rem 1.25rem;
-  border-radius: 18px;
+  padding: 0.875rem 1.5rem;
+  border-radius: 20px;
   border-bottom-left-radius: 4px;
   max-width: 85%;
-  line-height: 1.6;
+  line-height: 1.65;
   font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
 }
 
-/* Responsive Design */
+/* ===================================
+   Responsive Design
+   =================================== */
+
 @media (max-width: 996px) {
   .heroBanner {
-    padding: 4rem 1.5rem 3rem;
+    padding: 5rem 1.5rem 4rem;
   }
 
   .heroContent {
     grid-template-columns: 1fr;
     gap: 3rem;
+    text-align: center;
   }
 
   .heroText {
@@ -459,11 +897,17 @@
   }
 
   .heroTitle {
-    font-size: 2.5rem;
+    font-size: 2.75rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1.25rem;
   }
 
   .heroDescription {
     max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .buttons {
@@ -472,10 +916,26 @@
 
   .stats {
     justify-content: center;
+    flex-wrap: wrap;
   }
 
   .robotIcon {
-    font-size: 8rem;
+    font-size: 10rem;
+  }
+
+  .imageGlow {
+    width: 280px;
+    height: 280px;
+  }
+
+  .heroImage::before {
+    width: 220px;
+    height: 220px;
+  }
+
+  .heroImage::after {
+    width: 260px;
+    height: 260px;
   }
 
   .aiContent {
@@ -487,14 +947,22 @@
     text-align: center;
   }
 
+  .aiFeatures li {
+    justify-content: center;
+  }
+
   .sectionHeader h2 {
-    font-size: 2rem;
+    font-size: 2.25rem;
+  }
+
+  .chatPreview {
+    transform: none;
   }
 }
 
 @media (max-width: 768px) {
   .heroTitle {
-    font-size: 2rem;
+    font-size: 2.25rem;
   }
 
   .heroSubtitle {
@@ -502,15 +970,126 @@
   }
 
   .stats {
-    gap: 2rem;
+    gap: 1rem;
+  }
+
+  .stat {
+    padding: 1rem;
+    min-width: 80px;
   }
 
   .statNumber {
-    font-size: 2rem;
+    font-size: 1.75rem;
+  }
+
+  .statLabel {
+    font-size: 0.75rem;
+  }
+
+  .robotIcon {
+    font-size: 8rem;
   }
 
   .bookGrid,
   .techGrid {
     grid-template-columns: 1fr;
   }
+
+  .bookCard,
+  .techCard {
+    padding: 2rem;
+  }
+
+  .sectionHeader h2 {
+    font-size: 2rem;
+  }
+
+  .aiText h2 {
+    font-size: 2rem;
+  }
+
+  .featuredBook,
+  .techStack,
+  .aiSection {
+    padding: 5rem 1.5rem;
+  }
+}
+
+/* ===================================
+   Dark Mode Adjustments
+   =================================== */
+
+[data-theme='dark'] .featuredBook {
+  background: linear-gradient(180deg, #0a0f1a 0%, #0f172a 100%);
+}
+
+[data-theme='dark'] .featuredBook::before {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0v15M30 45v15M0 30h15M45 30h15' stroke='%23334155' stroke-width='1' fill='none'/%3E%3Ccircle cx='30' cy='30' r='3' fill='%23334155'/%3E%3C/svg%3E");
+}
+
+[data-theme='dark'] .bookCard {
+  background: #0f172a;
+  border-color: rgba(0, 212, 255, 0.15);
+}
+
+[data-theme='dark'] .bookCard:hover {
+  border-color: rgba(0, 212, 255, 0.4);
+  box-shadow:
+    0 25px 50px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(0, 212, 255, 0.1);
+}
+
+[data-theme='dark'] .bookCard::after {
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M80 40H50M60 80V50M50 50h10v10' stroke='%23334155' stroke-width='1' fill='none'/%3E%3Ccircle cx='50' cy='50' r='3' fill='%23334155'/%3E%3C/svg%3E");
+}
+
+[data-theme='dark'] .bookCard h3 {
+  color: #f1f5f9;
+}
+
+[data-theme='dark'] .bookCard p {
+  color: #94a3b8;
+}
+
+[data-theme='dark'] .techStack {
+  background: linear-gradient(180deg, #0f172a 0%, #0a0f1a 100%);
+}
+
+[data-theme='dark'] .techCard {
+  background: #0f172a;
+  border-color: rgba(0, 212, 255, 0.15);
+}
+
+[data-theme='dark'] .techCard:hover {
+  box-shadow: 0 20px 40px rgba(0, 212, 255, 0.15), 0 0 30px rgba(0, 212, 255, 0.1);
+}
+
+[data-theme='dark'] .techCard h4 {
+  color: #f1f5f9;
+}
+
+[data-theme='dark'] .techCard p {
+  color: #94a3b8;
+}
+
+[data-theme='dark'] .sectionHeader p {
+  color: #94a3b8;
+}
+
+[data-theme='dark'] .cardIcon {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+}
+
+[data-theme='dark'] .chatPreview {
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 212, 255, 0.1);
+}
+
+[data-theme='dark'] .chatBody {
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+}
+
+[data-theme='dark'] .botMessage {
+  background: rgba(0, 212, 255, 0.08);
+  color: #e2e8f0;
+  border-color: rgba(0, 212, 255, 0.2);
 }
