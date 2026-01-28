@@ -3,8 +3,8 @@ Health check endpoints
 """
 from fastapi import APIRouter
 from datetime import datetime
-from app.models.chat import HealthResponse
-from app.utils.config import settings
+from ..models.chat import HealthResponse
+from ..utils.config import settings
 
 router = APIRouter(tags=["health"])
 

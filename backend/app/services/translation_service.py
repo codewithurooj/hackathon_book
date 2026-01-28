@@ -11,9 +11,9 @@ Handles all business logic for translation operations including:
 import asyncpg
 from typing import Optional, List, Dict, Any
 from datetime import datetime
-from app.utils.config import settings
-from app.utils.urdu_validator import is_valid_urdu_text
-from app.models.translation import (
+from ..utils.config import settings
+from ..utils.urdu_validator import is_valid_urdu_text
+from ..models.translation import (
     TranslationResponse,
     TranslationSubmitResult,
     UserPointsResponse

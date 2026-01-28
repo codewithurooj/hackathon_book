@@ -3,8 +3,8 @@ FastAPI main application
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import health, chat, translation
-from app.utils.config import settings
+from .routers import health, chat, translation
+from .utils.config import settings
 import structlog
 
 # Configure structured logging

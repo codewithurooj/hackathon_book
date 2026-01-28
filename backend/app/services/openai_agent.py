@@ -1,5 +1,5 @@
 from openai import OpenAI
-from backend.app.config import settings
+from ..utils.config import settings
 from typing import List, Dict, Optional
 from pydantic import BaseModel, Field
 import json

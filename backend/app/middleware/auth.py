@@ -9,7 +9,7 @@ replaced with a proper authentication system (JWT, OAuth2, etc.)
 
 from fastapi import Header, HTTPException, Depends
 from typing import Optional
-from app.utils.config import settings
+from ..utils.config import settings
 
 
 async def get_current_user_id(

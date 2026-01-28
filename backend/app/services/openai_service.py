@@ -1,5 +1,5 @@
 from openai import OpenAI
-from backend.app.config import settings
+from ..utils.config import settings
 
 openai_client: OpenAI = None
 
@@ -21,6 +21,6 @@ async def generate_embedding(text: str) -> list[float]:
     client = await get_openai_client()
     response = client.embeddings.create(
         input=text,
-        model=settings.OPENAI_EMBEDDING_MODEL
+        model=settings.EMBEDDING_MODEL
     )
     return response.data[0].embedding

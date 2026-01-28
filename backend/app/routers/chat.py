@@ -5,13 +5,14 @@ from fastapi import APIRouter, HTTPException, Request, Depends
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from typing import List, Dict, Optional
-from app.models.chat import (
+from ..models.chat import (
     GeneralChatRequest,
     ContextChatRequest,
     ChatResponse,
     Source
 )
-from app.services.rag_service import RAGService
+from ..services.rag_service import RAGService
+from ..api.auth import get_api_key
 import time
 import structlog
 import json
@@ -127,7 +128,7 @@ class ChatKitRequest(BaseModel):
 @router.post("/chatkit/chat")
 async def chatkit_chat(
     request: ChatKitRequest,
-    api_key: str = Depends(lambda: __import__('app.api.auth', fromlist=['get_api_key']).get_api_key)
+    api_key: str = Depends(get_api_key)
 ):
     """
     ChatKit-compatible endpoint that follows OpenAI's Chat Completion API format.

@@ -3,7 +3,7 @@ Qdrant vector database service
 """
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
-from app.utils.config import settings
+from ..utils.config import settings
 from typing import List, Dict, Any
 import structlog
 import uuid
@@ -15,7 +15,7 @@ class QdrantService:
     """Service for interacting with Qdrant vector database"""
 
     def __init__(self):
-        from app.utils.config import settings
+        from ..utils.config import settings
         self.client = QdrantClient(
             url=settings.QDRANT_URL,
             api_key=settings.QDRANT_API_KEY
@@ -31,7 +31,7 @@ class QdrantService:
         """
         try:
             # Force reload settings to ensure we're using the correct collection name
-            from app.utils.config import settings
+            from ..utils.config import settings
             self.collection_name = settings.QDRANT_COLLECTION_NAME
 
             collections = self.client.get_collections().collections
@@ -67,7 +67,7 @@ class QdrantService:
         """
         try:
             # Force reload settings to ensure we're using the correct collection name
-            from app.utils.config import settings
+            from ..utils.config import settings
             self.collection_name = settings.QDRANT_COLLECTION_NAME
 
             points = [
@@ -109,7 +109,7 @@ class QdrantService:
         """
         try:
             # Force reload settings to ensure we're using the correct collection name
-            from app.utils.config import settings
+            from ..utils.config import settings
             self.collection_name = settings.QDRANT_COLLECTION_NAME
 
             # Use query_points for the new Qdrant client API
