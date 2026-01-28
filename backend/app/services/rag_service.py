@@ -2,10 +2,10 @@
 RAG (Retrieval Augmented Generation) service
 Orchestrates embedding, vector search, and answer generation
 """
-from .embedding_service import EmbeddingService
-from .qdrant_service import QdrantService
-from .agent_service import AgentService
-from ..models.chat import Source
+from app.services.embedding_service import EmbeddingService
+from app.services.qdrant_service import QdrantService
+from app.services.agent_service import AgentService
+from app.models.chat import Source
 from typing import List, Tuple
 import structlog
 

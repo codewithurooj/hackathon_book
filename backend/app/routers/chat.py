@@ -5,14 +5,14 @@ from fastapi import APIRouter, HTTPException, Request, Depends
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from typing import List, Dict, Optional
-from ..models.chat import (
+from app.models.chat import (
     GeneralChatRequest,
     ContextChatRequest,
     ChatResponse,
     Source
 )
-from ..services.rag_service import RAGService
-from ..api.auth import get_api_key
+from app.services.rag_service import RAGService
+from app.api.auth import get_api_key
 import time
 import structlog
 import json

@@ -1,5 +1,5 @@
 from openai import OpenAI
-from ..utils.config import settings
+from app.utils.config import settings
 
 openai_client: OpenAI = None
 

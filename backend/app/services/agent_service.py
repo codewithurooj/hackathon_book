@@ -2,7 +2,7 @@
 Agent service using OpenAI API
 """
 from openai import OpenAI
-from ..utils.config import settings
+from app.utils.config import settings
 from typing import List, Dict, Any
 import structlog
 

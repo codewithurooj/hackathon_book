@@ -11,7 +11,7 @@ Provides REST API for Urdu translation feature including:
 
 from fastapi import APIRouter, HTTPException, Depends
 from typing import List
-from ..models.translation import (
+from app.models.translation import (
     TranslationResponse,
     TranslationSubmit,
     TranslationSubmitResult,
@@ -19,8 +19,8 @@ from ..models.translation import (
     BulkTranslationUpload,
     TranslationCheckResponse
 )
-from ..services.translation_service import translation_service
-from ..middleware.auth import get_current_user_id, verify_api_key
+from app.services.translation_service import translation_service
+from app.middleware.auth import get_current_user_id, verify_api_key
 import structlog
 
 
