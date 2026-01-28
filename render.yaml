@@ -5,12 +5,15 @@ services:
     region: singapore
     plan: free
     branch: main
-    buildCommand: cd backend && pip install -r requirements.txt
-    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /api/v1/health
+    rootDir: backend
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.6
+      - key: PYTHONPATH
+        value: /opt/render/project/src/backend
       - key: ENVIRONMENT
         value: production
       - key: LOG_LEVEL
