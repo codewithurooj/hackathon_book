@@ -57,6 +57,7 @@ site/
 *.onnx
 *.pb
 models/
+!backend/app/models/
 checkpoints/
 
 # Audio files (for VLA testing)
